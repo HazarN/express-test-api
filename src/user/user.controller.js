@@ -3,6 +3,7 @@ const exceptions = require('../exceptions');
 
 const bcrypt = require('bcrypt');
 
+// GET
 function getUsers(req, res) {
   sql`SELECT * FROM users;`
     .then(users => res.status(200).json(users))
@@ -13,6 +14,7 @@ function getUsers(req, res) {
     });
 }
 
+// GET
 function getUserById(req, res) {
   const userId = req.params.id;
 
@@ -31,6 +33,7 @@ function getUserById(req, res) {
     });
 }
 
+// POST
 function addUser(req, res) {
   const { username, password, email } = req.body;
 
@@ -53,8 +56,40 @@ function addUser(req, res) {
     });
 }
 
+// PUT
+function updateUser(req, res) {
+  throw new Error('Not Implemented Yet!');
+}
+
+// DELETE
+function removeUser(req, res) {
+  const userId = req.params.id;
+
+  sql`SELECT * FROM users WHERE id = ${userId};`
+    .then(user => {
+      if (user.length > 0)
+        return sql`DELETE FROM users WHERE id = ${userId};`.then(() => {
+          res.status(200).json({
+            message: 'User deleted successfully',
+          });
+        });
+      else {
+        exceptions.NotFound(res);
+        throw new Error('User not found');
+      }
+    })
+    .catch(err => {
+      if (err.message === 'User not found') return;
+
+      console.log(err);
+      exceptions.InternalServerError(res);
+    });
+}
+
 module.exports = {
   getUsers,
   getUserById,
   addUser,
+  updateUser,
+  removeUser,
 };
