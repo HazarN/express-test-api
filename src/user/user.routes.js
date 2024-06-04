@@ -1,4 +1,3 @@
-const sql = require('../../db');
 const {
   getUsers,
   getUserById,
