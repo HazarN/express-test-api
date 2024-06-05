@@ -1,10 +1,11 @@
 const userRouter = require('./user/user.routes');
 
 const express = require('express');
-
 const app = express();
 
+// enforce the use of json in the request body
 app.use(express.json());
+// log the request method, original URL, status code, and response time
 app.use((req, res, next) => {
   const start = Date.now();
 
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 
 app.use('/users', userRouter);
 
+// Deafult route to check if the server is running
 app.get('/', (req, res) => {
   res.status(200).json({
     info: 'The server is running...',
